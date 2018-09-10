@@ -28,6 +28,10 @@ use Cake\Event\Event;
 class AppController extends Controller
 {
 
+    public $controller;
+    public $action;
+    public $prefix;
+
     /**
      * Initialization hook method.
      *
@@ -39,7 +43,6 @@ class AppController extends Controller
      */
     public function initialize()
     {
-//        var_dump($this->request->getUri());
         parent::initialize();
 
         $this->loadComponent('RequestHandler', [
@@ -57,40 +60,41 @@ class AppController extends Controller
                     'fields' => ['username' => 'email']
                 ]
             ],
-            'storage' => 'Session',
-
-
-            // -------------------------------------
-
-
-            //'authenticate' => null,
-            'authorize' => null,
-            'ajaxLogin' => null,
-            'flash' => null,
-            //'loginAction' => null,
-            'loginRedirect' => null,
-            'logoutRedirect' => null,
-            //'authError' => null,
-            'unauthorizedRedirect' => true,
-            //'storage' => 'Session',
-            'checkAuthIn' => 'Controller.startup'
-
-
-
         ]);
-//        $this->Auth->allow(['Index.index', 'logout']);
-
+        $this->Auth->allow(['login', 'logout']);
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
-        //$this->loadComponent('Security');
+//        $this->loadComponent('Security');
+//        $this->loadComponent('Csrf');
+
+//        debug($this->request->params);
+//        debug($this->request->getParam());
+
+        $this->setParams();
     }
 
+    public function beforeFilter(Event $event)
+    {
+        return parent::beforeFilter($event);
+    }
 
     public function isAuthorized($user) {
-//        dump($user);
-
         return true;
+    }
+
+    protected function setParams() {
+        $this->controller = $this->request->getParam('controller');
+        $this->action = $this->request->getParam('action');
+        $this->prefix = $this->request->getParam('prefix');
+
+        if($this->prefix == 'api') {
+            $this->viewBuilder()->setLayout('ajax');
+            $this->viewBuilder()->setTemplate('/Element/ajaxreturn');
+            $this->response->withType('json');
+        } else {
+            $this->viewBuilder()->setLayout('vue');
+        }
     }
 }

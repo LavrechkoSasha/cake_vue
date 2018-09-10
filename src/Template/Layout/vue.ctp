@@ -8,12 +8,16 @@
     </title>
     <?= $this->Html->meta('icon') ?>
 
+
+
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 
 </head>
 <body>
+
+<input type="hidden" id="csrf" value="<?= $this->request->getParam('_csrfToken'); ?>">
 
 <?= $this->Flash->render() ?>
 <div class="container clearfix">

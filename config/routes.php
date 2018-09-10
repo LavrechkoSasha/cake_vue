@@ -57,12 +57,19 @@ Router::scope('/', function (RouteBuilder $routes) {
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
     $routes->connect('/', ['controller' => 'Index', 'action' => 'index', 'home']);
-    $routes->connect('/login', ['controller' => 'Users', 'action' => 'login', 'login']);
+    $routes->connect('/login', ['controller' => 'Index', 'action' => 'index', 'login']);
+    $routes->connect('/orders', ['controller' => 'Orders', 'action' => 'index', 'home']);
+//    $routes->connect('/login', ['controller' => 'Users', 'action' => 'login', 'login']);
 
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
      */
 //    $routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
+
+
+    Router::prefix('api', function ($routes) {
+        $routes->connect('/login', ['controller' => 'Users', 'action' => 'login', 'api_login']);
+    });
 
     /**
      * Connect catchall routes for all controllers.
